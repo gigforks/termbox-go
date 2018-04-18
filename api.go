@@ -21,14 +21,20 @@ import "time"
 //              panic(err)
 //      }
 //      defer termbox.Close()
-func Init() error {
+func Init(n ...int) error {
 	var err error
+	dev := "/dev/tty"
+	if len(n) > 1 {
+		return fmt.Errorf("only one optional tty number is allowed")
+	} else if len(n) == 1 {
+		dev = fmt.Sprint(dev, n[0])
+	}
 
-	out, err = os.OpenFile("/dev/tty", syscall.O_WRONLY, 0)
+	out, err = os.OpenFile(dev, syscall.O_WRONLY, 0)
 	if err != nil {
 		return err
 	}
-	in, err = syscall.Open("/dev/tty", syscall.O_RDONLY, 0)
+	in, err = syscall.Open(dev, syscall.O_RDONLY, 0)
 	if err != nil {
 		return err
 	}
